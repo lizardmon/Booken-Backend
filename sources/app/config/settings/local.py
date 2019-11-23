@@ -62,8 +62,12 @@ MANAGERS = ADMINS
 # https://docs.djangoproject.com/en/2.2/topics/auth/customizing/#writing-an-authentication-backend
 ADMIN_LOGIN = "admin"
 ADMIN_PASSWORD = (
-    "argon2$argon2i$v=19$m=512,t=2,p=2$Q2VtSG9DSmJ1WWtH$vIub4JXDuMVXWM+Tg6161A"
+    "argon2$argon2i$v=19$m=512,t=2,p=2$T1Ztc3ZQc3JPUTBI$BJ8IHL1GUz9CMa6s+lvDfg"
 )
+
+# django-sslserver
+# ------------------------------------------------------------------------------
+INSTALLED_APPS += ["sslserver"]  # noqa
 
 
 # django-debug-toolbar
