@@ -32,6 +32,7 @@ psycopg2-binary = "*"
 djangorestframework = "*"
 pillow = "*"
 drf-yasg = "*"
+django-filter = "*"
 
 [requires]
 python_version = "3.6"
