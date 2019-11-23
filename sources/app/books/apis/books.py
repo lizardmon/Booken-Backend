@@ -1,11 +1,12 @@
+from django.http import Http404
 from django.utils.decorators import method_decorator
-from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.generics import get_object_or_404
 
-from books.models import Book
+from books.models import Book, ResponseNotExistsError
 from books.serializers.books import BookSerializer
-
+from utils.errors import ISBNNotExistsError
 
 __all___ = (
     'BookViewSet',
@@ -31,7 +32,15 @@ class BookViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filter_fields = [
-        'isbn',
-    ]
+    lookup_field = 'isbn'
+
+    def get_object(self):
+        try:
+            instance = super().get_object()
+        except Http404:
+            try:
+                instance = Book().isbn_create(self.kwargs.get('isbn'))
+            except ResponseNotExistsError:
+                raise ISBNNotExistsError
+
+        return instance

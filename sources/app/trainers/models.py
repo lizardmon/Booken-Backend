@@ -13,10 +13,14 @@ class Trainer(models.Model):
     image_url = models.ImageField(
         '트레이너 이미지',
         upload_to=image_file_name,
+        blank=True,
+        null=True,
     )
     impact_image_url = models.ImageField(
         '트레이너 선택 이미지',
         upload_to=image_file_name,
+        blank=True,
+        null=True,
     )
 
     def __str__(self):

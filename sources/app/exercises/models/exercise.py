@@ -1,5 +1,6 @@
 from django.db import models
 
+from trainers.models import Trainer
 from .exercise_category import ExerciseCategory
 
 __all__ = (
@@ -9,7 +10,7 @@ __all__ = (
 
 
 def image_file_name(instance, filename):
-    return '/'.join(['exercises', instance.name, filename])
+    return '/'.join(['trainers', instance.trainer.name, 'exercise', filename])
 
 
 class Exercise(models.Model):
@@ -25,14 +26,20 @@ class Exercise(models.Model):
     )
     calorie = models.IntegerField(
         '칼로리',
+        blank=True,
+        null=True,
     )
     time = models.IntegerField(
         '시간',
+        blank=True,
+        null=True,
     )
 
     power = models.CharField(
         max_length=255,
         choices=EXERCISE_CHOICES,
+        blank=True,
+        null=True,
     )
 
     category = models.ForeignKey(
@@ -50,16 +57,16 @@ class Exercise(models.Model):
 
 
 class ExerciseImage(models.Model):
-    name = models.CharField(
-        verbose_name='운동 이름',
-        max_length=255,
-    )
     ordering = models.IntegerField(
         verbose_name='순서',
     )
     url = models.ImageField(
         verbose_name='이미지',
         upload_to=image_file_name,
+    )
+    trainer = models.ForeignKey(
+        Trainer,
+        on_delete=models.CASCADE,
     )
 
     exercise = models.ForeignKey(

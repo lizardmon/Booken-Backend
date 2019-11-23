@@ -13,6 +13,7 @@ class ExerciseCategory(models.Model):
     )
     description = models.TextField(
         '설명',
+        blank=True,
     )
 
     def __str__(self):

@@ -50,10 +50,7 @@ class ExerciseListSerializer(serializers.ModelSerializer):
         source='exercisedescription_set',
         many=True,
     )
-    images = ExerciseImageSerializer(
-        source='exerciseimage_set',
-        many=True,
-    )
+    images = serializers.SerializerMethodField()
     category = ExerciseCategorySerializer()
 
     class Meta:
@@ -68,3 +65,10 @@ class ExerciseListSerializer(serializers.ModelSerializer):
             'images',
             'category',
         ]
+
+    def get_images(self, instance):
+        trainer = self.context.get('request').query_params.get('trainer')
+        return ExerciseImageSerializer(
+            instance.exerciseimage_set.filter(trainer=trainer),
+            many=True,
+        ).data
