@@ -23,9 +23,6 @@ class Exercise(models.Model):
         '이름',
         max_length=255,
     )
-    description = models.TextField(
-        '설명',
-    )
     calorie = models.IntegerField(
         '칼로리',
     )
