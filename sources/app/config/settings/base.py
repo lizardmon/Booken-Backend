@@ -51,7 +51,10 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
 ]
-LOCAL_APPS = ["users.apps.UsersAppConfig"]
+LOCAL_APPS = [
+    "trainers.apps.TrainersAppConfig",
+    "users.apps.UsersAppConfig",
+]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = LOCAL_APPS + DJANGO_APPS + THIRD_PARTY_APPS
 
