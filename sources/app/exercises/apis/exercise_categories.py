@@ -3,8 +3,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 
 from exercises.models import ExerciseCategory
-from exercises.serializers.exercise_categories import ExerciseCategorySerializer
-
+from exercises.serializers.exercise_categories import ExerciseCategoryListSerializer
 
 __all___ = (
     'ExerciseCategoryViewSet',
@@ -30,4 +29,4 @@ class ExerciseCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     운동 카테고리 API
     """
     queryset = ExerciseCategory.objects.all()
-    serializer_class = ExerciseCategorySerializer
+    serializer_class = ExerciseCategoryListSerializer
