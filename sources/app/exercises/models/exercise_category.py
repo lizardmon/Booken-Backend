@@ -15,6 +15,9 @@ class ExerciseCategory(models.Model):
         '설명',
     )
 
+    def __str__(self):
+        return f'운동 카테고리: {self.name}'
+
     class Meta:
         verbose_name = '운동 카테고리'
         verbose_name_plural = '운동 카테고리들'

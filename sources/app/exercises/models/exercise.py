@@ -41,6 +41,9 @@ class Exercise(models.Model):
         on_delete=models.CASCADE,
     )
 
+    def __str__(self):
+        return f'운동: {self.name}, 칼로리: {self.calorie}'
+
     class Meta:
         verbose_name = '운동'
         verbose_name_plural = '운동들'
@@ -64,6 +67,9 @@ class ExerciseImage(models.Model):
         verbose_name='운동',
         on_delete=models.CASCADE,
     )
+
+    def __str__(self):
+        return f'운동 이미지 {self.ordering}'
 
     class Meta:
         verbose_name = '운동 이미지'

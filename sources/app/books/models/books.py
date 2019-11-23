@@ -48,6 +48,9 @@ class Book(models.Model):
     )
     # TODO: Reviews 모델 생성 해야함
 
+    def __str__(self):
+        return f'책: {self.name}, 평정: {self.grade}'
+
     class Meta:
         verbose_name = '책'
         verbose_name_plural = '책들'

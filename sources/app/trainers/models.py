@@ -19,6 +19,9 @@ class Trainer(models.Model):
         upload_to=image_file_name,
     )
 
+    def __str__(self):
+        return f'트레이너 {self.name} 님'
+
     class Meta:
         verbose_name = '트레이너'
         verbose_name_plural = '트레이너들'

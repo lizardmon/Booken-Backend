@@ -7,6 +7,9 @@ class BookPublisher(models.Model):
         max_length=255,
     )
 
+    def __str__(self):
+        return f'출판사: {self.name}'
+
     class Meta:
         verbose_name = '출판사'
         verbose_name_plural = '출판사들'
