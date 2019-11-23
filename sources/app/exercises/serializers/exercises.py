@@ -1,3 +1,4 @@
+from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 
 from exercises.models import Exercise, ExerciseImage, ExerciseDescription
@@ -50,7 +51,10 @@ class ExerciseListSerializer(serializers.ModelSerializer):
         source='exercisedescription_set',
         many=True,
     )
-    images = serializers.SerializerMethodField()
+    images = ExerciseImageSerializer(
+        source='exerciseimage_set',
+        many=True,
+    )
     category = ExerciseCategorySerializer()
 
     class Meta:
@@ -65,10 +69,3 @@ class ExerciseListSerializer(serializers.ModelSerializer):
             'images',
             'category',
         ]
-
-    def get_images(self, instance):
-        trainer = self.context.get('request').query_params.get('trainer')
-        return ExerciseImageSerializer(
-            instance.exerciseimage_set.filter(trainer=trainer),
-            many=True,
-        ).data
