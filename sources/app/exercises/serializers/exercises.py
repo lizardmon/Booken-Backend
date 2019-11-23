@@ -27,9 +27,11 @@ class ExerciseDescriptionSerializer(serializers.ModelSerializer):
 class ExerciseSerializer(serializers.ModelSerializer):
     descriptions = ExerciseDescriptionSerializer(
         source='exercisedescription_set',
+        many=True,
     )
     images = ExerciseImageSerializer(
         source='exerciseimage_set',
+        many=True,
     )
 
     class Meta:
