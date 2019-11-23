@@ -52,6 +52,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
 ]
 LOCAL_APPS = [
+    "exercises.apps.ExercisesAppConfig",
     "trainers.apps.TrainersAppConfig",
     "users.apps.UsersAppConfig",
 ]
