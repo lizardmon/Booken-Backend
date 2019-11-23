@@ -48,7 +48,9 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    "rest_framework",
+]
 LOCAL_APPS = ["users.apps.UsersAppConfig"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = LOCAL_APPS + DJANGO_APPS + THIRD_PARTY_APPS
@@ -66,6 +68,14 @@ INSTALLED_APPS = LOCAL_APPS + DJANGO_APPS + THIRD_PARTY_APPS
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
+
+
+# REST_FRAMEWORK
+# ------------------------------------------------------------------------------
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 
 
 # PASSWORDS
