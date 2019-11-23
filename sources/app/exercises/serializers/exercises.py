@@ -24,6 +24,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
         fields = [
             'pk',
             'name',
+            'time',
             'calorie',
             'power',
             'descriptions',

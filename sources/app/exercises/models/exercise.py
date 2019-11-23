@@ -26,6 +26,9 @@ class Exercise(models.Model):
     calorie = models.IntegerField(
         '칼로리',
     )
+    time = models.IntegerField(
+        '시간',
+    )
 
     power = models.CharField(
         max_length=255,
