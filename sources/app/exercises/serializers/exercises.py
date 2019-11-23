@@ -14,6 +14,9 @@ class ExerciseImagesSerializer(serializers.ModelSerializer):
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
+    descriptions = serializers.ListField(
+        source='description_set',
+    )
     images = ExerciseImagesSerializer(many=True)
 
     class Meta:
@@ -21,8 +24,8 @@ class ExerciseSerializer(serializers.ModelSerializer):
         fields = [
             'pk',
             'name',
-            'description',
             'calorie',
             'power',
+            'descriptions',
             'images',
         ]
