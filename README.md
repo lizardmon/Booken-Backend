@@ -273,7 +273,7 @@ LoadBalaner와 Target 그룹을 생성
 ecs-cli compose --file docker-compose.yml --file docker-compose.prod.yml --project-name <Task 이름> service create --target-group-arn <Target GroupARN> --container-name nginx --container-port 443
 
 ecs-cli compose --file docker-compose.yml --file docker-compose.prod.yml --project-name <Task 이름> service up
-ecs-cli compose --file docker-compose.yml --file docker-compose.prod.yml --project-name <Task 이름> service down
+ecs-cli compose --file docker-compose.yml --file docker-compose.prod.yml --project-name <Task 이름> service up --force-update 
 ```
 
 
