@@ -28,6 +28,7 @@ boto3 = "*"
 django-secrets-manager = "*"
 django-storages = "*"
 psycopg2-binary = "*"
+djangorestframework = "*"
 
 [requires]
 python_version = "3.6"
