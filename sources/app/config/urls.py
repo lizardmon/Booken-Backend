@@ -17,7 +17,14 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
-urlpatterns = [path(settings.ADMIN_URL, admin.site.urls)]
+from config.routers import router
+
+urlpatterns = [
+    path(settings.ADMIN_URL, admin.site.urls),
+
+    path('rest/', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+]
 
 if settings.DEBUG:
     import debug_toolbar
