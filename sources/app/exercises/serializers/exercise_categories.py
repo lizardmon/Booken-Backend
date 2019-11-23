@@ -13,7 +13,7 @@ class ExerciseCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ExerciseCategory
         fields = [
-            'pk',
+            'id',
             'name',
             'description',
         ]
@@ -29,7 +29,7 @@ class ExerciseCategoryListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExerciseCategory
         fields = [
-            'pk',
+            'id',
             'name',
             'description',
             'exercises',

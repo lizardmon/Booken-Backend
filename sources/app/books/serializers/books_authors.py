@@ -7,6 +7,6 @@ class BookAuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookAuthor
         fields = [
-            'pk',
+            'id',
             'name',
         ]

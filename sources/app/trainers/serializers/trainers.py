@@ -8,7 +8,7 @@ class TrainerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trainer
         fields = [
-            'pk',
+            'id',
             'name',
             'image_url',
             'impact_image_url',
