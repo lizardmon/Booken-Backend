@@ -1,4 +1,5 @@
 from django.utils.decorators import method_decorator
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 
@@ -28,6 +29,9 @@ class BookViewSet(viewsets.ReadOnlyModelViewSet):
     """
     책 API
     """
-
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = [
+        'isbn',
+    ]
