@@ -65,6 +65,7 @@ ADMIN_PASSWORD = (
     "argon2$argon2i$v=19$m=512,t=2,p=2$T1Ztc3ZQc3JPUTBI$BJ8IHL1GUz9CMa6s+lvDfg"
 )
 
+
 # django-sslserver
 # ------------------------------------------------------------------------------
 INSTALLED_APPS += ["sslserver"]  # noqa
