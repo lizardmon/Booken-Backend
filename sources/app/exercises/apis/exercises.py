@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 
 from exercises.models import Exercise
@@ -9,9 +11,23 @@ __all___ = (
 )
 
 
+@method_decorator(
+    name='list',
+    decorator=swagger_auto_schema(
+        operation_summary='Exercise List',
+        operation_description='운동 목록',
+    )
+)
+@method_decorator(
+    name='retrieve',
+    decorator=swagger_auto_schema(
+        operation_summary='Get Exercise',
+        operation_description='운동 하나',
+    )
+)
 class ExerciseViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    운동 API
     """
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer
