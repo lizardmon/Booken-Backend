@@ -19,6 +19,7 @@ ipython = "*"
 pytest-pythonpath = "*"
 isort = "*"
 pytest-sugar = "*"
+django-sslserver = "*"
 
 [packages]
 django = "*"
@@ -29,6 +30,7 @@ django-secrets-manager = "*"
 django-storages = "*"
 psycopg2-binary = "*"
 djangorestframework = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.6"
