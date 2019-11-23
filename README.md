@@ -264,6 +264,18 @@ ecs-cli configure --cluster <Cluster 이름> --default-launch-type EC2 --region 
 ecs-cli compose --file docker-compose.yml --file docker-compose.prod.yml --project-name <Task 이름> up
 ```
 
+## HTTPS와 함께 사용하기
+
+AWS Credentials와 LoadBalancer가 필요해진다.
+LoadBalaner와 Target 그룹을 생성
+
+```shell script
+ecs-cli compose --file docker-compose.yml --file docker-compose.prod.yml --project-name <Task 이름> service create --target-group-arn <Target GroupARN> --container-name nginx --container-port 443
+
+ecs-cli compose --file docker-compose.yml --file docker-compose.prod.yml --project-name <Task 이름> service up
+ecs-cli compose --file docker-compose.yml --file docker-compose.prod.yml --project-name <Task 이름> service down
+```
+
 
 # TODO
 
