@@ -17,7 +17,9 @@ class ExerciseSerializer(serializers.ModelSerializer):
     descriptions = serializers.ListField(
         source='description_set',
     )
-    images = ExerciseImagesSerializer(many=True)
+    images = serializers.ListField(
+        source='image_set',
+    )
 
     class Meta:
         model = Exercise
