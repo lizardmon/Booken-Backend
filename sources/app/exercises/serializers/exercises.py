@@ -37,6 +37,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
+            'english_name',
             'time',
             'calorie',
             'power',
@@ -62,6 +63,7 @@ class ExerciseListSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
+            'english_name',
             'time',
             'calorie',
             'power',

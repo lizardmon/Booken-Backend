@@ -24,6 +24,10 @@ class Exercise(models.Model):
         '이름',
         max_length=255,
     )
+    english_name = models.CharField(
+        '영어 이름',
+        max_length=255,
+    )
     calorie = models.IntegerField(
         '칼로리',
         blank=True,
