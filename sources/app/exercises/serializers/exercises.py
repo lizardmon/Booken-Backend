@@ -1,4 +1,3 @@
-from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 
 from exercises.models import Exercise, ExerciseImage, ExerciseDescription
@@ -49,7 +48,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
 
 
 class ExerciseListSerializer(serializers.ModelSerializer):
-    from exercises.serializers.exercise_categories import ExerciseCategorySerializer
+    from exercises.serializers.exercise_categories import ExerciseCategorySerializer  # pylint: disable=C0415,R0401
     descriptions = ExerciseDescriptionSerializer(
         source='exercisedescription_set',
         many=True,

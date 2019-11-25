@@ -6,7 +6,7 @@ ignore=migrations,settings
 max-line-length=120
 
 [MESSAGES CONTROL]
-disable=missing-docstring,invalid-name,import-error,no-self-use,import-error,too-few-public-methods,django-not-available
+disable=missing-docstring,invalid-name,import-error,no-self-use,import-error,too-few-public-methods,django-not-available,duplicate-code
 
 [DESIGN]
 max-parents=13

@@ -1,8 +1,12 @@
 import requests
 from django.db import models, transaction
 
-from books.models import BookAuthor, BookPublisher
 from utils.errors import ResponseNotExistsError
+from books.models import BookAuthor, BookPublisher  # pylint: disable=R0401
+
+__all__ = (
+    'Book',
+)
 
 
 def image_file_name(instance, filename):
@@ -54,6 +58,7 @@ class Book(models.Model):
         verbose_name='출판사',
         on_delete=models.CASCADE,
     )
+
     # TODO: Reviews 모델 생성 해야함
 
     def __str__(self):
@@ -65,7 +70,8 @@ class Book(models.Model):
 
     def isbn_create(self, isbn):
         api_key = '0d45bd66aad69ccb535639bcceeb7108'
-        url = f'http://seoji.nl.go.kr/landingPage/SearchApi.do?cert_key={api_key}&result_style=json&page_no=1&page_size=10&isbn={isbn}'
+        url = f'http://seoji.nl.go.kr/landingPage/SearchApi.do?' \
+              f'cert_key={api_key}&result_style=json&page_no=1&page_size=10&isbn={isbn}'
 
         response = requests.get(url).json()
 

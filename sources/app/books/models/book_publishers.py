@@ -1,6 +1,11 @@
 from django.db import models
 
 
+__all__ = (
+    'BookPublisher',
+)
+
+
 class BookPublisher(models.Model):
     name = models.CharField(
         '출판사 명',
