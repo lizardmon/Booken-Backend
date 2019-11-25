@@ -11,9 +11,9 @@ class ExerciseCategorySerializer(serializers.ModelSerializer):
 
 
 class ExerciseCategoryListSerializer(serializers.ModelSerializer):
-    from exercises.serializers.exercises import (
+    from exercises.serializers.exercises import (  # pylint: disable=C0415,R0401
         ExerciseSerializer,
-    )  # pylint: disable=C0415,R0401
+    )
 
     exercises = ExerciseSerializer(source="exercise_set", many=True)
 

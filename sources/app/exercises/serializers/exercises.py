@@ -37,9 +37,9 @@ class ExerciseSerializer(serializers.ModelSerializer):
 
 
 class ExerciseListSerializer(serializers.ModelSerializer):
-    from exercises.serializers.exercise_categories import (
+    from exercises.serializers.exercise_categories import (  # pylint: disable=C0415,R0401
         ExerciseCategorySerializer,
-    )  # pylint: disable=C0415,R0401
+    )
 
     descriptions = ExerciseDescriptionSerializer(
         source="exercisedescription_set", many=True
