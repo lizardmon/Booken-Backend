@@ -1,8 +1,7 @@
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import viewsets, status
-from rest_framework.generics import get_object_or_404
+from rest_framework import viewsets
 
 from books.models import Book, ResponseNotExistsError
 from books.serializers.books import BookSerializer
@@ -11,6 +10,7 @@ from utils.errors import ISBNNotExistsError
 __all___ = (
     'BookViewSet',
 )
+
 
 @method_decorator(
     name='list',

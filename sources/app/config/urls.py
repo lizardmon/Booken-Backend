@@ -29,18 +29,17 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 
-
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Booken API",
-      default_version='v1',
-      description="북근! API",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="tech@ashe.kr"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
+    openapi.Info(
+        title="Booken API",
+        default_version='v1',
+        description="북근! API",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="tech@ashe.kr"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [
