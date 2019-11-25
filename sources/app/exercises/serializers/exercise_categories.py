@@ -1,7 +1,7 @@
 from exercises.models import ExerciseCategory
 from rest_framework import serializers
 
-__all__ = ("ExerciseCategorySerializer",)
+__all__ = ("ExerciseCategorySerializer", "ExerciseCategoryListSerializer")
 
 
 class ExerciseCategorySerializer(serializers.ModelSerializer):

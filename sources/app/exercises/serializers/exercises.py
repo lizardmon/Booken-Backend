@@ -1,7 +1,7 @@
 from exercises.models import Exercise, ExerciseDescription, ExerciseImage
 from rest_framework import serializers
 
-__all__ = ("ExerciseSerializer",)
+__all__ = ("ExerciseSerializer", "ExerciseListSerializer")
 
 
 class ExerciseImageSerializer(serializers.ModelSerializer):
