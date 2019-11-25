@@ -1,7 +1,6 @@
-from rest_framework import routers
-
 from books import apis as books
 from exercises import apis as exercises
+from rest_framework import routers
 from trainers import apis as trainers
 from users import apis as users
 

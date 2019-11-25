@@ -1,2 +1,2 @@
-from .exercises import *
 from .exercise_categories import *
+from .exercises import *

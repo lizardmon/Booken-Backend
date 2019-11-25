@@ -1,9 +1,9 @@
 from django.utils.decorators import method_decorator
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework import viewsets
 
+from drf_yasg.utils import swagger_auto_schema
 from exercises.models import Exercise
 from exercises.serializers.exercises import ExerciseListSerializer
+from rest_framework import viewsets
 
 __all___ = (
     'ExerciseViewSet',

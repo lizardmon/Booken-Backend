@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from exercises.models import ExerciseCategory
+from rest_framework import serializers
 
 __all__ = (
     'ExerciseCategorySerializer',

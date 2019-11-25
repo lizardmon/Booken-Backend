@@ -1,6 +1,7 @@
 from django.db import models
 
 from trainers.models import Trainer
+
 from .exercise_category import ExerciseCategory
 
 __all__ = (

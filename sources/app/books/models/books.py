@@ -1,8 +1,8 @@
-import requests
 from django.db import models, transaction
 
-from utils.errors import ResponseNotExistsError
+import requests
 from books.models import BookAuthor, BookPublisher  # pylint: disable=R0401
+from utils.errors import ResponseNotExistsError
 
 __all__ = (
     'Book',

@@ -1,8 +1,7 @@
-from rest_framework import serializers
-
 from books.models import Book
 from books.serializers.book_publishers import BookPublisherSerializer
 from books.serializers.books_authors import BookAuthorSerializer
+from rest_framework import serializers
 
 
 class BookSerializer(serializers.ModelSerializer):

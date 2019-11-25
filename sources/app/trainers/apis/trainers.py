@@ -1,10 +1,9 @@
 from django.utils.decorators import method_decorator
+
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
-
 from trainers.models import Trainer
 from trainers.serializers.trainers import TrainerSerializer
-
 
 __all___ = (
     'TrainerViewSet',

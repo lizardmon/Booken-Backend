@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.utils.decorators import method_decorator
+
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
-
-from users.serializers.users import UserSerializer, GroupSerializer
+from users.serializers.users import GroupSerializer, UserSerializer
 
 __all__ = (
     'UserViewSet',
