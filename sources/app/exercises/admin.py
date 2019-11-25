@@ -14,6 +14,4 @@ class ExerciseCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
-    inlines = [
-        ExerciseImageInlineAdmin,
-    ]
+    inlines = [ExerciseImageInlineAdmin]

@@ -11,15 +11,15 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = [
-            'id',
-            'name',
-            'isbn',
-            'weight',
-            'page',
-            'sale_price',
-            'used_price',
-            'grade',
-            'cover_image_url',
-            'author',
-            'publisher',
+            "id",
+            "name",
+            "isbn",
+            "weight",
+            "page",
+            "sale_price",
+            "used_price",
+            "grade",
+            "cover_image_url",
+            "author",
+            "publisher",
         ]

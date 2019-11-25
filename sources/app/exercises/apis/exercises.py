@@ -5,28 +5,25 @@ from exercises.models import Exercise
 from exercises.serializers.exercises import ExerciseListSerializer
 from rest_framework import viewsets
 
-__all___ = (
-    'ExerciseViewSet',
-)
+__all___ = ("ExerciseViewSet",)
 
 
 @method_decorator(
-    name='list',
+    name="list",
     decorator=swagger_auto_schema(
-        operation_summary='Exercise List',
-        operation_description='운동 목록',
-    )
+        operation_summary="Exercise List", operation_description="운동 목록"
+    ),
 )
 @method_decorator(
-    name='retrieve',
+    name="retrieve",
     decorator=swagger_auto_schema(
-        operation_summary='Get Exercise',
-        operation_description='운동 하나',
-    )
+        operation_summary="Get Exercise", operation_description="운동 하나"
+    ),
 )
 class ExerciseViewSet(viewsets.ReadOnlyModelViewSet):
     """
     운동 API
     """
+
     queryset = Exercise.objects.all()
     serializer_class = ExerciseListSerializer

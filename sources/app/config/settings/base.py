@@ -48,11 +48,7 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
-THIRD_PARTY_APPS = [
-    "rest_framework",
-    "django_filters",
-    "drf_yasg",
-]
+THIRD_PARTY_APPS = ["rest_framework", "django_filters", "drf_yasg"]
 LOCAL_APPS = [
     "books.apps.BooksAppConfig",
     "exercises.apps.ExercisesAppConfig",
