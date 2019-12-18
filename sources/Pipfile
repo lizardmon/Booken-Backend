@@ -22,7 +22,7 @@ pytest-sugar = "*"
 django-sslserver = "*"
 
 [packages]
-django = "*"
+django = "==2.2"
 argon2-cffi = "*"
 sentry-sdk = "==0.7.9"
 boto3 = "*"
@@ -33,6 +33,7 @@ djangorestframework = "*"
 pillow = "*"
 drf-yasg = "*"
 django-filter = "*"
+django-simpleui = "*"
 
 [requires]
 python_version = "3.6"
