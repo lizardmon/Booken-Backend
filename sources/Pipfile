@@ -34,7 +34,6 @@ djangorestframework = "*"
 pillow = "*"
 drf-yasg = "*"
 django-filter = "*"
-django-simpleui = "*"
 
 [requires]
 python_version = "3.6"
