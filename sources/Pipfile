@@ -20,6 +20,7 @@ pytest-pythonpath = "*"
 isort = "*"
 pytest-sugar = "*"
 django-sslserver = "*"
+docker-compose = "*"
 
 [packages]
 django = "==2.2"
