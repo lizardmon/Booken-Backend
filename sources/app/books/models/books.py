@@ -53,7 +53,8 @@ class Book(models.Model):
         self.isbn = isbn
         self.name = book_json["TITLE"]
         # 무게
-        self.page = "".join(x for x in book_json["PAGE"] if x.isdigit())
+        page = "".join(x for x in book_json["PAGE"] if x.isdigit())
+        self.page = page if page else None
         self.sale_price = book_json["PRE_PRICE"]
         # 중고가
         # 평점
