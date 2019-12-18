@@ -1,11 +1,11 @@
 from django.http import Http404
 from django.utils.decorators import method_decorator
 
-from books.models import Book, ResponseNotExistsError
+from books.models import Book
 from books.serializers.books import BookSerializer
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
-from utils.errors import ISBNNotExistsError
+from utils.errors import ISBNNotExistsError, ResponseNotExistsError
 
 __all___ = ("BookViewSet",)
 
