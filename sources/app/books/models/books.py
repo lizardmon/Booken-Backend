@@ -1,7 +1,11 @@
+import asyncio
+
 from django.db import models, transaction
 
-import requests
 from books.models import BookAuthor, BookPublisher  # pylint: disable=R0401
+from utils.crawler.seoji.crawler import SeojiCrawler
+from utils.crawler.yes24.crawler import Yes24Crawler
+from utils.django.models import get_remote_image
 from utils.errors import ResponseNotExistsError
 
 __all__ = ("Book",)
@@ -36,38 +40,36 @@ class Book(models.Model):
         verbose_name_plural = "책들"
 
     def isbn_create(self, isbn):
-        api_key = "0d45bd66aad69ccb535639bcceeb7108"
-        url = (
-            f"http://seoji.nl.go.kr/landingPage/SearchApi.do?"
-            f"cert_key={api_key}&result_style=json&page_no=1&page_size=10&isbn={isbn}"
-        )
-
-        response = requests.get(url).json()
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
 
         try:
-            book_json = response["docs"][0]
-        except (KeyError, IndexError):
-            # 400 Error
-            raise ResponseNotExistsError
+            yes24_response = loop.run_until_complete(
+                Yes24Crawler(isbn).do()
+            )
+        except ResponseNotExistsError:
+            raise ResponseNotExistsError()
+        finally:
+            loop.close()
 
         self.isbn = isbn
-        self.name = book_json["TITLE"]
-        # 무게
-        page = "".join(x for x in book_json["PAGE"] if x.isdigit())
-        self.page = page if page else None
-        self.sale_price = book_json["PRE_PRICE"]
+        self.name = yes24_response.get("name")
+        self.weight = yes24_response.get('weight')
+        self.page = yes24_response.get('page')
+        self.sale_price = yes24_response.get('sale_price')
         # 중고가
-        # 평점
-        # 커버 이미지
+        self.grade = yes24_response.get('rating')
 
         with transaction.atomic():
-            author, _ = BookAuthor.objects.get_or_create(name=book_json["AUTHOR"])
+            author, _ = BookAuthor.objects.get_or_create(name=yes24_response.get('author'))
             publisher, _ = BookPublisher.objects.get_or_create(
-                name=book_json["PUBLISHER"]
+                name=yes24_response.get("publisher")
             )
 
             self.author = author
             self.publisher = publisher
+
+            self.cover_image_url.save(self.name + '.jpg', get_remote_image(yes24_response.get('image_url')))
             self.save()
 
         return self
