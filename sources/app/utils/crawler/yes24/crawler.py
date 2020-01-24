@@ -143,6 +143,7 @@ class Yes24Crawler:
 
     async def parse_book_info(self):
         name_target = '#yDetailTopWrap > .topColRgt > .gd_infoTop h2.gd_name'
+        isbn_target = '#infoset_specific tr:nth-of-type(3) .lastCol'
         author_target = '#yDetailTopWrap > .topColRgt > .gd_infoTop .gd_pubArea > .gd_auth > a'
         publisher_target = '#yDetailTopWrap > .topColRgt > .gd_infoTop .gd_pubArea > .gd_pub > a'
         sale_price_target = '#yDetailTopWrap > .topColRgt > .gd_infoBot .nor_price > em.yes_m'
@@ -155,6 +156,7 @@ class Yes24Crawler:
         soup = BeautifulSoup(html, 'html.parser')
 
         name = soup.select_one(name_target).get_text()
+        isbn = soup.select_one(isbn_target).get_text()
         sale_price = ''.join(
             filter(
                 str.isdigit,
@@ -179,6 +181,7 @@ class Yes24Crawler:
 
         return {
             'name': name,
+            'isbn': isbn,
             'sale_price': sale_price,
             'author': author,
             'publisher': publisher,

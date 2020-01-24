@@ -52,8 +52,8 @@ class Book(models.Model):
         finally:
             loop.close()
 
-        self.isbn = isbn
-        self.name = yes24_response.get("name")
+        self.isbn = yes24_response.get('isbn')
+        self.name = yes24_response.get('name')
         self.weight = yes24_response.get('weight')
         self.page = yes24_response.get('page')
         self.sale_price = yes24_response.get('sale_price')
@@ -63,7 +63,7 @@ class Book(models.Model):
         with transaction.atomic():
             author, _ = BookAuthor.objects.get_or_create(name=yes24_response.get('author'))
             publisher, _ = BookPublisher.objects.get_or_create(
-                name=yes24_response.get("publisher")
+                name=yes24_response.get('publisher')
             )
 
             self.author = author
