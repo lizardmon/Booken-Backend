@@ -34,6 +34,8 @@ djangorestframework = "*"
 pillow = "*"
 drf-yasg = "*"
 django-filter = "*"
+beautifulsoup4 = "*"
+pyppeteer = "*"
 
 [requires]
 python_version = "3.6"
