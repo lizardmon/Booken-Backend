@@ -16,7 +16,17 @@ class Yes24Crawler:
 
     async def do(self):
         self.browser = await launch(
-            {'args': ['--no-sandbox', '--disable-setuid-sandbox']},
+            {
+                'args': [
+                    '--disable-gpu',
+                    '--disable-dev-shm-usage',
+                    '--disable-setuid-sandbox',
+                    '--no-first-run',
+                    '--no-sandbox',
+                    '--no-zygote',
+                    '--single-process',
+                ],
+            },
             handleSIGINT=False,
             handleSIGTERM=False,
             handleSIGHUP=False,
