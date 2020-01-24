@@ -16,6 +16,7 @@ class Yes24Crawler:
 
     async def do(self):
         self.browser = await launch(
+            {'args': ['--no-sandbox', '--disable-setuid-sandbox']},
             handleSIGINT=False,
             handleSIGTERM=False,
             handleSIGHUP=False,
