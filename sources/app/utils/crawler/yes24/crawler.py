@@ -14,6 +14,34 @@ class Yes24Crawler:
         self.browser = None
         self.page = None
 
+    async def do_reviews(self):
+        self.browser = await launch(
+            {
+                'args': [
+                    '--disable-gpu',
+                    '--disable-dev-shm-usage',
+                    '--disable-setuid-sandbox',
+                    '--no-first-run',
+                    '--no-sandbox',
+                    '--no-zygote',
+                    '--single-process',
+                ],
+            },
+            headless=False,
+            handleSIGINT=False,
+            handleSIGTERM=False,
+            handleSIGHUP=False,
+        )
+        self.page = await self.browser.newPage()
+
+        await self.search_book_by_isbn()
+        await self.goto_book_detail_page()
+        reviews = await self.get_reviews()
+
+        await self.browser.close()
+
+        return reviews
+
     async def do(self):
         self.browser = await launch(
             {
@@ -67,7 +95,14 @@ class Yes24Crawler:
         review_nickname_target = '.cmt_etc > .txt_id > a.lnk_nick'
         review_created_at_target = '.cmt_etc > .txt_date'
 
-        rating = review.select_one(review_rating_target).get_text()
+        rating = float(
+            ''.join(
+                filter(
+                    str.isdigit,
+                    review.select_one(review_rating_target).get_text()
+                )
+            )
+        ) if review.select_one(review_rating_target) else None
         content = review.select_one(review_content_target).get_text()
         nickname = review.select_one(review_nickname_target).get_text()
         created_at = review.select_one(review_created_at_target).get_text()
@@ -91,7 +126,10 @@ class Yes24Crawler:
 
     async def get_reviews(self):
         # 리뷰 목록이 로딩되었는지 확인
+        load_target = '#infoset_rvCmt'
         review_load_target = '#infoset_oneCommentList > .rvCmt_sort'
+        # 한줄 평 없는 지 확인
+        review_no_comment_target = '#infoset_oneCommentNoData'
 
         # review_page_list 는 활성화된(현재 페이지)의 숫자는 제외하고 가져온다.
         review_page_list_target = review_load_target + ':nth-of-type(2) > .rvCmt_sortLft > .yesUI_pagenS > a.num'
@@ -102,6 +140,11 @@ class Yes24Crawler:
         review_content_group_target = review_content_load_target + ' > .cmtInfoGrp'
 
         result = []
+
+        # 리뷰가 없으면 리턴
+        await self.page.waitForSelector(load_target)
+        if await self.page.J(review_no_comment_target):
+            return result
 
         while True:
             # review_page_list 를 모두 돌고
@@ -132,7 +175,6 @@ class Yes24Crawler:
             html = await self.page.content()
             soup = BeautifulSoup(html, 'html.parser')
             if soup.select_one(review_next_page_target + '.dim'):
-                print('done')
                 break
             else:
                 next_page_target = await self.page.J(review_next_page_target)
