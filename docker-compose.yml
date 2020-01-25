@@ -8,16 +8,45 @@ services:
       - 443:443
     depends_on:
       - web  # 해당 컨테이너가 실행되기 위해 먼저 실행되어야하는 컨테이너를 지정
+      - celery
+      - celery-flower
     links:
-        - web  # links로 연결해주면 web:8000 으로 접근시 web 컨테이너의 8000번 포트로 접근할 수 있다.
+      - web  # links로 연결해주면 web:8000 으로 접근시 web 컨테이너의 8000번 포트로 접근할 수 있다.
+      - celery-flower
   web:
     container_name: web
     image: ashekr/book-worker
     working_dir: /srv/app
     command:
-      gunicorn config.wsgi:application -c /srv/gunicorn/gunicorn_cfg.py --bind 0.0.0.0:8000
+      gunicorn config.wsgi:application -c /srv/gunicorn/gunicorn_cfg.py --bind 0.0.0.0:8000 --timeout 60
     expose:
       - 8000
+    volumes:
+      - $HOME/.aws/credentials:/root/.aws/credentials
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - AWS_REGION_NAME=ap-northeast-2
+  celery:
+    container_name: celery
+    image: ashekr/book-worker
+    working_dir: /srv/app
+    command:
+      celery -A config worker -l info
+    volumes:
+      - $HOME/.aws/credentials:/root/.aws/credentials
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - AWS_REGION_NAME=ap-northeast-2
+  celery-flower:
+    container_name: celery-flower
+    image: ashekr/book-worker
+    working_dir: /srv/app
+    command:
+      celery -A config flower --url-prefix=flower -l info
+    expose:
+      - 5555
+    depends_on:
+      - celery
     volumes:
       - $HOME/.aws/credentials:/root/.aws/credentials
     environment:

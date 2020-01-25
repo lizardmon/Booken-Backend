@@ -11,3 +11,15 @@ task_definition:
           name: AWS_ACCESS_KEY_ID
         - value_from: SECRETS_MANAGER_SECRET_KEY
           name: AWS_SECRET_ACCESS_KEY
+    celery:
+      secrets:
+        - value_from: SECRETS_MANAGER_ACCESS_KEY
+          name: AWS_ACCESS_KEY_ID
+        - value_from: SECRETS_MANAGER_SECRET_KEY
+          name: AWS_SECRET_ACCESS_KEY
+    celery-flower:
+      secrets:
+        - value_from: SECRETS_MANAGER_ACCESS_KEY
+          name: AWS_ACCESS_KEY_ID
+        - value_from: SECRETS_MANAGER_SECRET_KEY
+          name: AWS_SECRET_ACCESS_KEY
