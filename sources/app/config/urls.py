@@ -16,15 +16,15 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
-
-from config.routers import router
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
+from config.routers import urlpatterns as app_urlpatterns
+
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
-    path("v1/", include(router.urls)),
+    path("v1/", include(app_urlpatterns)),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
 

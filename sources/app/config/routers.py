@@ -1,3 +1,5 @@
+from django.urls import path
+
 from books import apis as books
 from exercises import apis as exercises
 from rest_framework import routers
@@ -13,3 +15,9 @@ router.register(r"exercise_categories", exercises.ExerciseCategoryViewSet)
 router.register(r"users", users.UserViewSet)
 router.register(r"groups", users.GroupViewSet)
 router.register(r"trainers", trainers.TrainerViewSet)
+
+urlpatterns = [
+    path('books/<int:isbn>/reviews/', books.BookReviewListAPIView.as_view()),
+]
+
+urlpatterns += router.urls
