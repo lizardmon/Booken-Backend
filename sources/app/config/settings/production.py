@@ -2,6 +2,7 @@ import logging
 
 import sentry_sdk
 from django_secrets import SECRETS
+from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 
@@ -98,6 +99,12 @@ DEFAULT_FILE_STORAGE = "config.settings.production.MediaRootS3Boto3Storage"
 MEDIA_URL = "/media/"
 
 
+# celery
+# ------------------------------------------------------------------------------
+CELERY_BROKER_URL = SECRETS['CELERY_BROKER_URL']
+CELERY_RESULT_BACKEND = SECRETS['CELERY_BROKER_URL']
+
+
 # LOGGING
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging
@@ -142,4 +149,11 @@ sentry_logging = LoggingIntegration(
     level=SENTRY_LOG_LEVEL  # Capture info and above as breadcrumbs
 )
 
-sentry_sdk.init(dsn=SENTRY_DSN, integrations=[sentry_logging, DjangoIntegration()])
+sentry_sdk.init(
+    dsn=SENTRY_DSN,
+    integrations=[
+        sentry_logging,
+        DjangoIntegration(),
+        CeleryIntegration(),
+    ]
+)
