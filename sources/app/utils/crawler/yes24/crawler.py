@@ -1,70 +1,83 @@
+import requests
+
 from bs4 import BeautifulSoup
-from pyppeteer import launch
+from pyppeteer import launcher
 
 from utils.errors import ResponseNotExistsError
 
 
+class Singleton:
+    _instances = {}
+
+    def __new__(class_, *args, **kwargs):
+        if class_ not in class_._instances:
+            class_._instances[class_] = super(Singleton, class_).__new__(class_, *args, **kwargs)
+        return class_._instances[class_]
+
+
+class Browser(Singleton):
+    WS_END_POINT = None
+    BROWSER = None
+
+    @classmethod
+    async def get_page(cls):
+        if not cls.WS_END_POINT:
+            cls.BROWSER = await launcher.launch(
+                {
+                    'args': [
+                        '--disable-gpu',
+                        '--disable-dev-shm-usage',
+                        '--disable-setuid-sandbox',
+                        '--no-first-run',
+                        '--no-sandbox',
+                        '--no-zygote',
+                        '--single-process',
+                    ],
+                },
+                headless=False,
+                handleSIGINT=False,
+                handleSIGTERM=False,
+                handleSIGHUP=False,
+                autoClose=False,
+            )
+            cls.WS_END_POINT = cls.BROWSER.wsEndpoint
+        else:
+            cls.BROWSER = await launcher.connect(browserWSEndpoint=cls.WS_END_POINT)
+        return await cls.BROWSER.newPage()
+
+
 class Yes24Crawler:
-    BASE_URL = 'http://www.yes24.com/searchcorner/Search?'
-    QUERY = 'query={isbn}'
+    BASE_URL = 'http://www.yes24.com'
+    SEARCH_URL = '/searchcorner/Search?'
+    DETAIL_URL = '/Product/Goods/{yes24_book_id}'
+    REVIEW_URL = '/Product/communityModules/AwordReviewList/{yes24_book_id}?PageNumber={page_number}'
 
-    def __init__(self, isbn):
+    def __init__(self, isbn=None, yes24_book_id=None):
         self.isbn = isbn
+        self.yes24_book_id = yes24_book_id
 
-        self.browser = None
         self.page = None
 
+    async def open_browser(self):
+        self.page = await Browser.get_page()
+
+    async def get_yes24_book_id(self):
+        if not self.yes24_book_id:
+            await self.open_browser()
+            await self.search_book_by_isbn()
+            await self._get_yes24_book_id()
+            await self.page.close()
+        return self.yes24_book_id
+
     async def do_reviews(self):
-        self.browser = await launch(
-            {
-                'args': [
-                    '--disable-gpu',
-                    '--disable-dev-shm-usage',
-                    '--disable-setuid-sandbox',
-                    '--no-first-run',
-                    '--no-sandbox',
-                    '--no-zygote',
-                    '--single-process',
-                ],
-            },
-            handleSIGINT=False,
-            handleSIGTERM=False,
-            handleSIGHUP=False,
-        )
-        self.page = await self.browser.newPage()
-
-        await self.search_book_by_isbn()
-        await self.goto_book_detail_page()
-        reviews = await self.get_reviews()
-
-        await self.browser.close()
+        await self.get_yes24_book_id()
+        reviews = self.get_reviews()
 
         return reviews
 
     async def do(self):
-        self.browser = await launch(
-            {
-                'args': [
-                    '--disable-gpu',
-                    '--disable-dev-shm-usage',
-                    '--disable-setuid-sandbox',
-                    '--no-first-run',
-                    '--no-sandbox',
-                    '--no-zygote',
-                    '--single-process',
-                ],
-            },
-            handleSIGINT=False,
-            handleSIGTERM=False,
-            handleSIGHUP=False,
-        )
-        self.page = await self.browser.newPage()
-
-        await self.search_book_by_isbn()
-        await self.goto_book_detail_page()
-        book_info = await self.parse_book_info()
-
-        await self.browser.close()
+        await self.get_yes24_book_id()
+        book_info = self.parse_book_info()
 
         return book_info
 
@@ -73,20 +86,27 @@ class Yes24Crawler:
         ISBN 으로 책 검색
         """
         response = await self.page.goto(
-            self.BASE_URL + self.QUERY.format(isbn=self.isbn)
+            self.BASE_URL + self.SEARCH_URL + f'query={self.isbn}'
         )
 
         if await self.page.J('.area_no_result'):
-            raise ResponseNotExistsError()
+            raise ResponseNotExistsError()  # 추후 변경
 
         await self.page.waitForSelector('.goods_list_wrap .goodsList.goodsList_list')
 
-    async def goto_book_detail_page(self):
+    async def _get_yes24_book_id(self):
         """
-        검색된 책의 상세페이지로 이동
+        검색된 책의 ID 를 가져옴
         """
-        a_element = await self.page.J('.goods_name.goods_icon > a')
-        await a_element.click()
+        href_target = '.goods_name.goods_icon > a'
+
+        html = await self.page.content()
+        soup = BeautifulSoup(html, 'html.parser')
+
+        href = soup.select_one(href_target).get('href')
+        self.yes24_book_id = href.split('/Product/Goods/')[1].split('?')[0]
+
+        return self.yes24_book_id
 
     def parse_review(self, review):
         review_rating_target = '.cmtInfoBox > .cmt_rating > span.rating'
@@ -123,66 +143,36 @@ class Yes24Crawler:
 
         return results
 
-    async def get_reviews(self):
-        # 리뷰 목록이 로딩되었는지 확인
-        load_target = '#infoset_rvCmt'
-        review_load_target = '#infoset_oneCommentList > .rvCmt_sort'
+    def get_reviews(self):
         # 한줄 평 없는 지 확인
-        review_no_comment_target = '#infoset_oneCommentNoData'
-
-        # review_page_list 는 활성화된(현재 페이지)의 숫자는 제외하고 가져온다.
-        review_page_list_target = review_load_target + ':nth-of-type(2) > .rvCmt_sortLft > .yesUI_pagenS > a.num'
-        review_next_page_target = review_load_target + ':nth-of-type(2) > .rvCmt_sortLft > .yesUI_pagenS > a.bgYUI.next'
+        review_no_comment_target = '.noData'
 
         # 리뷰 컨텐츠 Target
-        review_content_load_target = '#infoset_oneCommentList > .infoSetCont_wrap'
-        review_content_group_target = review_content_load_target + ' > .cmtInfoGrp'
+        review_content_group_target = '.infoSetCont_wrap > .cmtInfoGrp'
 
+        page_number = 1
         result = []
 
-        # 리뷰가 없으면 리턴
-        await self.page.waitForSelector(load_target)
-        if await self.page.J(review_no_comment_target):
-            return result
-
         while True:
-            # review_page_list 를 모두 돌고
-            # last_page 가 dim 클래스를 가지고 있으면 종료
-
-            # 리뷰 로딩 대기
-            await self.page.waitForSelector(review_content_load_target)
-
-            # 첫 페이지는 그냥 가져와야함
-            html = await self.page.content()
+            html = requests.get(
+                self.BASE_URL + self.REVIEW_URL.format(
+                    yes24_book_id=self.yes24_book_id,
+                    page_number=page_number,
+                )
+            ).content
+            page_number += 1
             soup = BeautifulSoup(html, 'html.parser')
-            reviews = soup.select(review_content_group_target)
-            result += self.parse_reviews(reviews)
+            reviews_soup = soup.select(review_content_group_target)
 
-            review_page_list = soup.select(review_page_list_target)
-
-            for index, one_page in enumerate(review_page_list):
-                target_review_page_list = await self.page.JJ(review_page_list_target)
-                await target_review_page_list[index].click()
-                await self.page.waitForSelector(review_content_load_target)
-
-                html = await self.page.content()
-                soup = BeautifulSoup(html, 'html.parser')
-                reviews = soup.select(review_content_group_target)
-                result += self.parse_reviews(reviews)
-
-            # 다음 페이지가 없으면 dim 속성이 존재한다.
-            html = await self.page.content()
-            soup = BeautifulSoup(html, 'html.parser')
-            if soup.select_one(review_next_page_target + '.dim'):
+            # 최대 30 페이지까지만
+            if soup.select_one(review_no_comment_target) or page_number == 30:
                 break
-            else:
-                next_page_target = await self.page.J(review_next_page_target)
-                await next_page_target.click()
-                await self.page.waitFor(200)
+
+            result += self.parse_reviews(reviews_soup)
 
         return result
 
-    async def parse_book_info(self):
+    def parse_book_info(self):
         name_target = '#yDetailTopWrap > .topColRgt > .gd_infoTop h2.gd_name'
         isbn_target = '#infoset_specific tr:nth-of-type(3) .lastCol'
         author_target = '#yDetailTopWrap > .topColRgt > .gd_infoTop .gd_pubArea > .gd_auth > a'
@@ -192,8 +182,7 @@ class Yes24Crawler:
         rating_target = '#yDetailTopWrap > .topColRgt > .gd_infoTop #spanGdRating em.yes_b'
         page_weight_size_target = '#infoset_specific tr:nth-of-type(2) .lastCol'
 
-        await self.page.waitForSelector(page_weight_size_target)
-        html = await self.page.content()
+        html = requests.get(self.BASE_URL + self.DETAIL_URL.format(yes24_book_id=self.yes24_book_id)).content
         soup = BeautifulSoup(html, 'html.parser')
 
         name = soup.select_one(name_target).get_text()
@@ -221,6 +210,7 @@ class Yes24Crawler:
                 size = item.strip()
 
         return {
+            'yes24_book_id': self.yes24_book_id,
             'name': name,
             'isbn': isbn,
             'sale_price': sale_price,
