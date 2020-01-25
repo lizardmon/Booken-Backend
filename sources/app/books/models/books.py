@@ -1,9 +1,9 @@
 import asyncio
 
+from django.apps import apps
 from django.db import models, transaction
+from django.db.transaction import on_commit
 
-from books.models import BookAuthor, BookPublisher  # pylint: disable=R0401
-from utils.crawler.seoji.crawler import SeojiCrawler
 from utils.crawler.yes24.crawler import Yes24Crawler
 from utils.django.models import get_remote_image
 from utils.errors import ResponseNotExistsError
@@ -25,12 +25,10 @@ class Book(models.Model):
     grade = models.FloatField("평점", null=True)
     cover_image_url = models.ImageField("커버 이미지", null=True, upload_to=image_file_name)
 
-    author = models.ForeignKey(BookAuthor, verbose_name="저자", on_delete=models.CASCADE)
+    author = models.ForeignKey('BookAuthor', verbose_name="저자", on_delete=models.CASCADE)
     publisher = models.ForeignKey(
-        BookPublisher, verbose_name="출판사", on_delete=models.CASCADE
+        'BookPublisher', verbose_name="출판사", on_delete=models.CASCADE
     )
-
-    # TODO: Reviews 모델 생성 해야함
 
     def __str__(self):
         return f"책: {self.name}, 평정: {self.grade}"
@@ -60,6 +58,10 @@ class Book(models.Model):
         # 중고가
         self.grade = yes24_response.get('rating')
 
+        BookAuthor = apps.get_model(app_label='books', model_name='BookAuthor')
+        BookPublisher = apps.get_model(app_label='books', model_name='BookPublisher')
+        BookReview = apps.get_model(app_label='books', model_name='BookReview')
+
         with transaction.atomic():
             author, _ = BookAuthor.objects.get_or_create(name=yes24_response.get('author'))
             publisher, _ = BookPublisher.objects.get_or_create(
@@ -71,5 +73,7 @@ class Book(models.Model):
 
             self.cover_image_url.save(self.name + '.jpg', get_remote_image(yes24_response.get('image_url')))
             self.save()
+
+        on_commit(lambda: BookReview.get_reviews.delay(self.id))
 
         return self
