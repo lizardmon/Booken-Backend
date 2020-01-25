@@ -25,6 +25,8 @@ class Book(models.Model):
     grade = models.FloatField("평점", null=True)
     cover_image_url = models.ImageField("커버 이미지", null=True, upload_to=image_file_name)
 
+    yes24_book_id = models.IntegerField('Yes24 책 ID', null=True)
+
     author = models.ForeignKey('BookAuthor', verbose_name="저자", on_delete=models.CASCADE)
     publisher = models.ForeignKey(
         'BookPublisher', verbose_name="출판사", on_delete=models.CASCADE
@@ -50,6 +52,7 @@ class Book(models.Model):
         finally:
             loop.close()
 
+        self.yes24_book_id = yes24_response.get('yes24_book_id')
         self.isbn = yes24_response.get('isbn')
         self.name = yes24_response.get('name')
         self.weight = yes24_response.get('weight')
@@ -74,6 +77,6 @@ class Book(models.Model):
             self.cover_image_url.save(self.name + '.jpg', get_remote_image(yes24_response.get('image_url')))
             self.save()
 
-        # on_commit(lambda: BookReview.get_reviews.delay(self.id))
+        on_commit(lambda: BookReview.get_reviews.delay(self.id))
 
         return self
