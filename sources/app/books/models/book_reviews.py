@@ -38,7 +38,7 @@ class BookReview(models.Model):
 
         try:
             yes24_response = loop.run_until_complete(
-                Yes24Crawler(book.isbn).do_reviews()
+                Yes24Crawler(yes24_book_id=book.yes24_book_id).do_reviews()
             )
         except ResponseNotExistsError:
             raise ResponseNotExistsError()
