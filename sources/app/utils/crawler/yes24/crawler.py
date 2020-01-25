@@ -174,8 +174,8 @@ class Yes24Crawler:
     def parse_book_info(self):
         name_target = '#yDetailTopWrap > .topColRgt > .gd_infoTop h2.gd_name'
         isbn_target = '#infoset_specific tr:nth-of-type(3) .lastCol'
-        author_target = '#yDetailTopWrap > .topColRgt > .gd_infoTop .gd_pubArea > .gd_auth > a'
-        publisher_target = '#yDetailTopWrap > .topColRgt > .gd_infoTop .gd_pubArea > .gd_pub > a'
+        author_target = '#yDetailTopWrap > .topColRgt > .gd_infoTop .gd_pubArea > .gd_auth'
+        publisher_target = '#yDetailTopWrap > .topColRgt > .gd_infoTop .gd_pubArea > .gd_pub'
         sale_price_target = '#yDetailTopWrap > .topColRgt > .gd_infoBot .nor_price > em.yes_m'
         image_target = '#yDetailTopWrap .imgBdr > img'
         rating_target = '#yDetailTopWrap > .topColRgt > .gd_infoTop #spanGdRating em.yes_b'
@@ -192,8 +192,8 @@ class Yes24Crawler:
                 soup.select_one(sale_price_target).get_text()
             )
         ) if soup.select_one(sale_price_target) else None
-        author = soup.select_one(author_target).get_text()
-        publisher = soup.select_one(publisher_target).get_text()
+        author = soup.select_one(author_target).get_text(strip=True)
+        publisher = soup.select_one(publisher_target).get_text(strip=True)
         image_url = soup.select_one(image_target).get('src') if soup.select_one(image_target) else None
         rating = soup.select_one(rating_target).get_text() if soup.select_one(rating_target) else None
         page_weight_size = soup.select_one(page_weight_size_target).get_text().split('|')
