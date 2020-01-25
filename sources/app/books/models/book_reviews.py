@@ -12,7 +12,7 @@ from utils.errors import ResponseNotExistsError
 
 __all__ = ("BookReview",)
 
-logger = get_task_logger(__name__)
+
 class BookReview(models.Model):
     book = models.ForeignKey(
         Book,
@@ -38,8 +38,6 @@ class BookReview(models.Model):
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-
-        logger.info('Execute Get Reviews', book_id)
 
         try:
             yes24_response = loop.run_until_complete(
