@@ -14,3 +14,17 @@ services:
         awslogs-group: book-worker-group
         awslogs-region: ap-northeast-2
         awslogs-stream-prefix: web
+  celery:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: book-worker-group
+        awslogs-region: ap-northeast-2
+        awslogs-stream-prefix: celery
+  celery-flower:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: book-worker-group
+        awslogs-region: ap-northeast-2
+        awslogs-stream-prefix: celery-flower
