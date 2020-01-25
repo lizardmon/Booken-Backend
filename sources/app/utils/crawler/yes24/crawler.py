@@ -34,7 +34,6 @@ class Browser(Singleton):
                         '--single-process',
                     ],
                 },
-                headless=False,
                 handleSIGINT=False,
                 handleSIGTERM=False,
                 handleSIGHUP=False,
