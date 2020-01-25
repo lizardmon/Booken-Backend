@@ -8,8 +8,6 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 
 from .base import *  # noqa
 
-# from sentry_sdk.integrations.celery import CeleryIntegration
-
 
 # ENVIRON
 # ------------------------------------------------------------------------------

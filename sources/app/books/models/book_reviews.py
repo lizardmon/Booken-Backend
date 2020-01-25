@@ -1,14 +1,11 @@
 import asyncio
 
-from celery import shared_task
-from celery.utils.log import get_task_logger
 from django.db import models
 
 from books.models import Book
 from config.celery_app import app
 from utils.crawler.yes24.crawler import Yes24Crawler
 from utils.errors import ResponseNotExistsError
-
 
 __all__ = ("BookReview",)
 
