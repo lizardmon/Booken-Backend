@@ -150,6 +150,8 @@ class Yes24Crawler:
         for item in page_weight_size:
             if '쪽' in item:
                 page = ''.join(filter(str.isdigit, item))
+                # 쪽수 확인 중인게 있음
+                page = page if page else None
             elif 'g' in item:
                 weight = ''.join(filter(str.isdigit, item))
             elif 'mm' in item:
