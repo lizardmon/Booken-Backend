@@ -27,7 +27,6 @@ class Yes24Crawler:
                     '--single-process',
                 ],
             },
-            headless=False,
             handleSIGINT=False,
             handleSIGTERM=False,
             handleSIGHUP=False,
