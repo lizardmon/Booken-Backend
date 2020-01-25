@@ -74,6 +74,6 @@ class Book(models.Model):
             self.cover_image_url.save(self.name + '.jpg', get_remote_image(yes24_response.get('image_url')))
             self.save()
 
-        on_commit(lambda: BookReview.get_reviews.delay(self.id))
+        # on_commit(lambda: BookReview.get_reviews.delay(self.id))
 
         return self
