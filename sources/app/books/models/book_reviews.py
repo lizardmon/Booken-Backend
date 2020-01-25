@@ -33,17 +33,10 @@ class BookReview(models.Model):
     def get_reviews(book_id):
         book = Book.objects.get(id=book_id)
 
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-
         try:
-            yes24_response = loop.run_until_complete(
-                Yes24Crawler(yes24_book_id=book.yes24_book_id).do_reviews()
-            )
+            yes24_response = Yes24Crawler(yes24_book_id=book.yes24_book_id).do_reviews()
         except ResponseNotExistsError:
             raise ResponseNotExistsError()
-        finally:
-            loop.close()
 
         bulk_review_list = []
 

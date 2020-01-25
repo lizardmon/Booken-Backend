@@ -40,17 +40,11 @@ class Book(models.Model):
         verbose_name_plural = "책들"
 
     def isbn_create(self, isbn):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
 
         try:
-            yes24_response = loop.run_until_complete(
-                Yes24Crawler(isbn).do()
-            )
+            yes24_response = Yes24Crawler(isbn).do()
         except ResponseNotExistsError:
             raise ResponseNotExistsError()
-        finally:
-            loop.close()
 
         self.yes24_book_id = yes24_response.get('yes24_book_id')
         self.isbn = yes24_response.get('isbn')

@@ -1,48 +1,8 @@
 import requests
-
 from bs4 import BeautifulSoup
-from pyppeteer import launcher
+
 
 from utils.errors import ResponseNotExistsError
-
-
-class Singleton:
-    _instances = {}
-
-    def __new__(class_, *args, **kwargs):
-        if class_ not in class_._instances:
-            class_._instances[class_] = super(Singleton, class_).__new__(class_, *args, **kwargs)
-        return class_._instances[class_]
-
-
-class Browser(Singleton):
-    WS_END_POINT = None
-    BROWSER = None
-
-    @classmethod
-    async def get_page(cls):
-        if not cls.WS_END_POINT:
-            cls.BROWSER = await launcher.launch(
-                {
-                    'args': [
-                        '--disable-gpu',
-                        '--disable-dev-shm-usage',
-                        '--disable-setuid-sandbox',
-                        '--no-first-run',
-                        '--no-sandbox',
-                        '--no-zygote',
-                        '--single-process',
-                    ],
-                },
-                handleSIGINT=False,
-                handleSIGTERM=False,
-                handleSIGHUP=False,
-                autoClose=False,
-            )
-            cls.WS_END_POINT = cls.BROWSER.wsEndpoint
-        else:
-            cls.BROWSER = await launcher.connect(browserWSEndpoint=cls.WS_END_POINT)
-        return await cls.BROWSER.newPage()
 
 
 class Yes24Crawler:
@@ -57,50 +17,37 @@ class Yes24Crawler:
 
         self.page = None
 
-    async def open_browser(self):
-        self.page = await Browser.get_page()
-
-    async def get_yes24_book_id(self):
+    def get_yes24_book_id(self):
         if not self.yes24_book_id:
-            await self.open_browser()
-            await self.search_book_by_isbn()
-            await self._get_yes24_book_id()
-            await self.page.close()
+            self._get_yes24_book_id()
         return self.yes24_book_id
 
-    async def do_reviews(self):
-        await self.get_yes24_book_id()
+    def do_reviews(self):
+        self.get_yes24_book_id()
         reviews = self.get_reviews()
 
         return reviews
 
-    async def do(self):
-        await self.get_yes24_book_id()
+    def do(self):
+        self.get_yes24_book_id()
         book_info = self.parse_book_info()
 
         return book_info
 
-    async def search_book_by_isbn(self):
-        """
-        ISBN 으로 책 검색
-        """
-        response = await self.page.goto(
-            self.BASE_URL + self.SEARCH_URL + f'query={self.isbn}'
-        )
-
-        if await self.page.J('.area_no_result'):
-            raise ResponseNotExistsError()  # 추후 변경
-
-        await self.page.waitForSelector('.goods_list_wrap .goodsList.goodsList_list')
-
-    async def _get_yes24_book_id(self):
+    def _get_yes24_book_id(self):
         """
         검색된 책의 ID 를 가져옴
         """
         href_target = '.goods_name.goods_icon > a'
+        no_result = '.area_no_result'
 
-        html = await self.page.content()
+        html = requests.get(
+            self.BASE_URL + self.SEARCH_URL + f'query={self.isbn}'
+        ).content
         soup = BeautifulSoup(html, 'html.parser')
+
+        if soup.select(no_result):
+            raise ResponseNotExistsError()
 
         href = soup.select_one(href_target).get('href')
         self.yes24_book_id = href.split('/Product/Goods/')[1].split('?')[0]
