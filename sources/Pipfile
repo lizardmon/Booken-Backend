@@ -36,6 +36,8 @@ drf-yasg = "*"
 django-filter = "*"
 beautifulsoup4 = "*"
 pyppeteer = "*"
+celery = {extras = ["redis"],version = "*"}
+flower = "*"
 
 [requires]
 python_version = "3.6"
