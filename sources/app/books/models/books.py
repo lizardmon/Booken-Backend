@@ -1,7 +1,7 @@
 import asyncio
 
 from django.apps import apps
-from django.db import models, transaction
+from django.db import models, transaction, IntegrityError
 from django.db.transaction import on_commit
 
 from utils.crawler.yes24.crawler import Yes24Crawler
@@ -16,7 +16,7 @@ def image_file_name(instance, filename):
 
 
 class Book(models.Model):
-    isbn = models.CharField("ISBN", max_length=255)
+    isbn = models.CharField("ISBN", max_length=255, unique=True,)
     name = models.CharField("이름", max_length=255)
     weight = models.IntegerField("무게", null=True)
     page = models.IntegerField("페이지", null=True)
@@ -59,17 +59,21 @@ class Book(models.Model):
         BookPublisher = apps.get_model(app_label='books', model_name='BookPublisher')
         BookReview = apps.get_model(app_label='books', model_name='BookReview')
 
-        with transaction.atomic():
-            author, _ = BookAuthor.objects.get_or_create(name=yes24_response.get('author'))
-            publisher, _ = BookPublisher.objects.get_or_create(
-                name=yes24_response.get('publisher')
-            )
+        try:
+            with transaction.atomic():
+                author, _ = BookAuthor.objects.get_or_create(name=yes24_response.get('author'))
+                publisher, _ = BookPublisher.objects.get_or_create(
+                    name=yes24_response.get('publisher')
+                )
 
-            self.author = author
-            self.publisher = publisher
+                self.author = author
+                self.publisher = publisher
 
-            self.cover_image_url.save(self.name + '.jpg', get_remote_image(yes24_response.get('image_url')))
-            self.save()
+                self.cover_image_url.save(self.name + '.jpg', get_remote_image(yes24_response.get('image_url')))
+                self.save()
+        except IntegrityError:
+            # 중복 ISBN 이 있을 경우 해당 Object Return
+            return self.objects.get(isbn=isbn)
 
         on_commit(lambda: BookReview.get_reviews.delay(self.id))
 
