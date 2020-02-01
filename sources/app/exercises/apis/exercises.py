@@ -1,7 +1,8 @@
+from django.db.models import Prefetch
 from django.utils.decorators import method_decorator
 
 from drf_yasg.utils import swagger_auto_schema
-from exercises.models import Exercise
+from exercises.models import Exercise, ExerciseImage
 from exercises.serializers.exercises import ExerciseListSerializer
 from rest_framework import viewsets
 
@@ -27,3 +28,15 @@ class ExerciseViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Exercise.objects.all()
     serializer_class = ExerciseListSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        trainer_id = self.request.query_params.get('trainer', None)
+        if trainer_id is not None:
+            queryset = queryset.prefetch_related(
+                Prefetch(
+                    'exerciseimage_set',
+                    queryset=ExerciseImage.objects.filter(trainer=trainer_id)
+                )
+            )
+        return queryset
