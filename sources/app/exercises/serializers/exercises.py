@@ -1,5 +1,6 @@
-from exercises.models import Exercise, ExerciseDescription, ExerciseImage
 from rest_framework import serializers
+
+from exercises.models import Exercise, ExerciseImage
 
 __all__ = ("ExerciseSerializer", "ExerciseListSerializer")
 
@@ -10,15 +11,12 @@ class ExerciseImageSerializer(serializers.ModelSerializer):
         fields = ["url"]
 
 
-class ExerciseDescriptionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ExerciseDescription
-        fields = ["description"]
-
-
 class ExerciseSerializer(serializers.ModelSerializer):
-    descriptions = ExerciseDescriptionSerializer(
-        source="exercisedescription_set", many=True
+    descriptions = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='description',
+        source="exercisedescription_set",
     )
     images = ExerciseImageSerializer(source="exerciseimage_set", many=True)
 
@@ -41,8 +39,11 @@ class ExerciseListSerializer(serializers.ModelSerializer):
         ExerciseCategorySerializer,
     )
 
-    descriptions = ExerciseDescriptionSerializer(
-        source="exercisedescription_set", many=True
+    descriptions = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='description',
+        source="exercisedescription_set",
     )
     images = ExerciseImageSerializer(source="exerciseimage_set", many=True)
     category = ExerciseCategorySerializer()
