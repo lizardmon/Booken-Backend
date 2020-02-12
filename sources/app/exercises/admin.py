@@ -1,6 +1,10 @@
 from django.contrib import admin
 
-from exercises.models import Exercise, ExerciseCategory, ExerciseImage
+from exercises.models import Exercise, ExerciseCategory, ExerciseImage, ExerciseDescription
+
+
+class ExerciseDescriptionInlineAdmin(admin.StackedInline):
+    model = ExerciseDescription
 
 
 class ExerciseImageInlineAdmin(admin.StackedInline):
@@ -14,4 +18,4 @@ class ExerciseCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
-    inlines = [ExerciseImageInlineAdmin]
+    inlines = [ExerciseImageInlineAdmin, ExerciseDescriptionInlineAdmin]
