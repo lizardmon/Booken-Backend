@@ -23,7 +23,7 @@ django-sslserver = "*"
 docker-compose = "*"
 
 [packages]
-django = "==2.2.8"
+django = "==2.2.20"
 argon2-cffi = "*"
 sentry-sdk = "==0.7.9"
 boto3 = "*"
