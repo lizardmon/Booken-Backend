@@ -37,7 +37,7 @@ django-filter = "*"
 beautifulsoup4 = "*"
 celery = {extras = ["redis"],version = "*"}
 flower = "*"
-websockets = "==6"
+websockets = "==9.1"
 
 [requires]
 python_version = "3.6"
